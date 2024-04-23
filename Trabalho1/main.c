@@ -4,12 +4,12 @@
 #include "Pilha.h"
 
 int precedencia(char c);
+int avaliar_funcao(char *expression);
 char *converter_para_posfixo(char *e);
 
 int main()
 {
-    char *e;
-
+    char e[200]; // temp, tentar fazer de outro jeito depois
     scanf("%s", e);
     
     converter_para_posfixo(e);
@@ -26,7 +26,7 @@ int precedencia(char c)
             return 1;
         case '*':
         case '/':
-            return 1;
+            return 2;
     }
 }
 
@@ -60,8 +60,7 @@ char *converter_para_posfixo(char *e)
             case '9':
             {
                 // Coloque c na string S;
-                s[j] = c;
-                j++;
+                s[j++] = c;
                 break;
             }
 
@@ -76,8 +75,7 @@ char *converter_para_posfixo(char *e)
                 {
                     desempilha(&p, &x);
                     // coloque x na string S
-                    s[j] = x;
-                    j++;
+                    s[j++] = x;
                 }
 
                 if (pilha_vazia(p))
@@ -105,8 +103,7 @@ char *converter_para_posfixo(char *e)
                     {
                         desempilha(&p, &x);
                         // coloque x na string S
-                        s[j] = x;
-                        j++;
+                        s[j++] = x;
                     }
                     
                     empilha(&p, c);
@@ -132,20 +129,88 @@ char *converter_para_posfixo(char *e)
         {
             desempilha(&p, &x);
             // coloque x na string S
-            s[j] = x;
-            j++;
+            s[j++] = x;
         }
         
         if (pilha_vazia(p))
         {
-            s[j] = '\n';
-            j++;
+            s[j++] = '\0';
             printf("String: %s\n", s);
             // chama função para avaliar expressão em S; // próximo algoritmo
+            int res = avaliar_funcao(s);
+            printf("%d", res);
         }
         else
             printf("Erro: '(' não foi fechado!");
     }
     
+    desaloca_pilha(&p);
     return s;
+}
+
+int eh_digito(char* c)
+{
+    return 
+        c == '0' ||
+        c == '1' ||
+        c == '2' ||
+        c == '3' ||
+        c == '4' ||
+        c == '5' ||
+        c == '6' ||
+        c == '7' ||
+        c == '8' ||
+        c == '9';
+}
+
+int avaliar_funcao(char *expression)
+{
+    Pilha p;
+    int i = 0;
+
+    inicializa_pilha(&p, 255);
+
+    while (expression[i] != '\0')
+    {
+        char c = expression[i];
+        if (eh_digito(c))
+        {
+            int converted = c - 48;
+            empilha(&p, converted);
+        }
+        else
+        {
+            int aux1, aux2, result;
+            desempilha(&p, &aux2);
+            desempilha(&p, &aux1);
+
+            switch (c)
+            {
+                case '+':
+                    result = aux1 + aux2;
+                    break;
+                case '-':
+                    result = aux1 - aux2;
+                    break;
+                case '/':
+                    result = aux1 / aux2;
+                    break;
+                case '*':
+                    result = aux1 * aux2;
+                    break;
+            }
+
+            empilha(&p, result);
+        }
+
+        i++;
+    }
+
+    int res;
+
+    desempilha(&p, &res);
+
+    desaloca_pilha(&p);
+
+    return res;
 }
