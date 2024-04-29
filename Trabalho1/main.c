@@ -36,7 +36,7 @@ char *converter_para_posfixo(char *e)
     int deu_erro = 0;
     
     Pilha p;
-    inicializa_pilha(&p, 100);
+    inicializa_pilha(&p, strlen(e));
 
     int i = 0, j = 0;
     int x;
