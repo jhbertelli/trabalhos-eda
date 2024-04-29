@@ -9,7 +9,7 @@ char *converter_para_posfixo(char *e);
 
 int main()
 {
-    char e[200]; // temp, tentar fazer de outro jeito depois
+    char e[200];
     scanf("%s", e);
     
     converter_para_posfixo(e);
@@ -32,7 +32,7 @@ int precedencia(char c)
 
 char *converter_para_posfixo(char *e)
 {
-    char s[999]; // temp, tentar fazer de outro jeito depois
+    char *s = malloc(strlen(e) + 1);
     int deu_erro = 0;
     
     Pilha p;
@@ -46,8 +46,6 @@ char *converter_para_posfixo(char *e)
         char c = e[i];
         switch (c)
         {
-            // case ' ': // TODO
-            //     continue;
             case '0':
             case '1':
             case '2':
@@ -59,7 +57,6 @@ char *converter_para_posfixo(char *e)
             case '8':
             case '9':
             {
-                // Coloque c na string S;
                 s[j++] = c;
                 break;
             }
@@ -69,12 +66,12 @@ char *converter_para_posfixo(char *e)
                 empilha(&p, c);
                 break;
             }
+
             case ')':
             {
                 while (le_topo(p, &x) != ERRO_PILHA_VAZIA && x != '(')
                 {
                     desempilha(&p, &x);
-                    // coloque x na string S
                     s[j++] = x;
                 }
 
@@ -88,6 +85,7 @@ char *converter_para_posfixo(char *e)
 
                 break;
             }
+
             case '-':
             case '*':
             case '/':
@@ -102,7 +100,6 @@ char *converter_para_posfixo(char *e)
                     while (le_topo(p, &x) != ERRO_PILHA_VAZIA && precedencia(x) >= precedencia(c))
                     {
                         desempilha(&p, &x);
-                        // coloque x na string S
                         s[j++] = x;
                     }
                     
@@ -128,7 +125,6 @@ char *converter_para_posfixo(char *e)
         while (le_topo(p, &x) != ERRO_PILHA_VAZIA && x != '(')
         {
             desempilha(&p, &x);
-            // coloque x na string S
             s[j++] = x;
         }
         
@@ -136,7 +132,6 @@ char *converter_para_posfixo(char *e)
         {
             s[j++] = '\0';
             printf("String: %s\n", s);
-            // chama função para avaliar expressão em S; // próximo algoritmo
             int res = avaliar_funcao(s);
             printf("%d", res);
         }
@@ -148,19 +143,24 @@ char *converter_para_posfixo(char *e)
     return s;
 }
 
-int eh_digito(char* c)
+int eh_digito(char c)
 {
-    return 
-        c == '0' ||
-        c == '1' ||
-        c == '2' ||
-        c == '3' ||
-        c == '4' ||
-        c == '5' ||
-        c == '6' ||
-        c == '7' ||
-        c == '8' ||
-        c == '9';
+    switch (c)
+    {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return 1;
+        default:
+            return 0;
+    }
 }
 
 int avaliar_funcao(char *expression)
@@ -168,7 +168,7 @@ int avaliar_funcao(char *expression)
     Pilha p;
     int i = 0;
 
-    inicializa_pilha(&p, 255);
+    inicializa_pilha(&p, strlen(expression));
 
     while (expression[i] != '\0')
     {
