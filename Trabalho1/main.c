@@ -3,36 +3,25 @@
 #include <string.h>
 #include "Pilha.h"
 
-int precedencia(char c);
-int avaliar_funcao(char *expression);
 char *converter_para_posfixo(char *e);
+void remove_espacos(char *expressao);
+int avaliar_funcao(char *expression);
+int precedencia(char c);
+int eh_digito(char c);
 
 int main()
 {
     char e[200];
-    scanf("%s", e);
+    scanf("%[^\n]", e);
     
     converter_para_posfixo(e);
 }
 
-int precedencia(char c)
-{
-    switch (c)
-    {
-        case '(':
-            return 0;
-        case '+':
-        case '-':
-            return 1;
-        case '*':
-        case '/':
-            return 2;
-    }
-}
-
 char *converter_para_posfixo(char *e)
 {
-    char *s = malloc(strlen(e) + 1);
+    remove_espacos(e);
+    
+    char *s = malloc(strlen(e));
     int deu_erro = 0;
     
     Pilha p;
@@ -143,26 +132,6 @@ char *converter_para_posfixo(char *e)
     return s;
 }
 
-int eh_digito(char c)
-{
-    switch (c)
-    {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-            return 1;
-        default:
-            return 0;
-    }
-}
-
 int avaliar_funcao(char *expression)
 {
     Pilha p;
@@ -213,4 +182,56 @@ int avaliar_funcao(char *expression)
     desaloca_pilha(&p);
 
     return res;
+}
+
+int precedencia(char c)
+{
+    switch (c)
+    {
+        case '(':
+            return 0;
+        case '+':
+        case '-':
+            return 1;
+        case '*':
+        case '/':
+            return 2;
+    }
+}
+
+// Remove os espaços do input, permitindo assim que o usuário insira uma expressão com espaços
+void remove_espacos(char *expressao)
+{
+    int len = strlen(expressao);
+    char *str_sem_espacos = malloc(len);
+
+    int count = 0;
+
+    for (int i = 0; i < len + 1; i++)
+    {
+        if (expressao[i] != ' ')
+            str_sem_espacos[count++] = expressao[i];
+    }
+
+    strcpy(expressao, str_sem_espacos);
+}
+
+int eh_digito(char c)
+{
+    switch (c)
+    {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return 1;
+        default:
+            return 0;
+    }
 }
