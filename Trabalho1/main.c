@@ -120,15 +120,16 @@ char *converter_para_posfixo(char *e)
         if (pilha_vazia(p))
         {
             s[j++] = '\0';
-            printf("String: %s\n", s);
+            printf("Notacao posfixa: %s\n", s);
             int res = avaliar_funcao(s);
-            printf("%d", res);
+            printf("Resultado: %d\n", res);
         }
         else
             printf("Erro: '(' não foi fechado!");
     }
     
     desaloca_pilha(&p);
+
     return s;
 }
 
