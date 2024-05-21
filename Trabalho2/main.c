@@ -46,8 +46,8 @@ int main()
     vert_a--;
     vert_b--;
 
-    int *va = malloc(sizeof(int) * n);
-    int *vs = malloc(sizeof(int) * n);
+    int *va = calloc(n, sizeof(int));
+    int *vs = calloc(n, sizeof(int));
 
     Fila f;
 
@@ -98,5 +98,5 @@ int main()
         }
     }
     else
-        printf("B não é alcançável a partir de A!");
+        printf("B nao eh alcancavel a partir de A!");
 }
