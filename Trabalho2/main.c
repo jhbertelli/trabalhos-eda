@@ -21,11 +21,11 @@ int main()
         
         inicializa_matriz(&m, n, n);
 
-        for(int i = 0; i < n; i++)
-            for(int j = 0; j < n; j++)
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
             {
                 int val;
-                printf("Valor de m[%d][%d] : ", i + 1, j + 1);
+                printf("Posicao [%d][%d] - ", i + 1, j + 1);
                 scanf("%d", &val);
                 set_valor(&m, i, j, val);
             }
